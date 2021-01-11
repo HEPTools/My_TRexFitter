@@ -1,3 +1,8 @@
+**/__pycache__
+
+**/backup*
+**/core.*
+
 *.pdf
 *.png
 *.root
