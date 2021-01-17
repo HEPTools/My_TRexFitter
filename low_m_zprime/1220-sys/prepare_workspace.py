@@ -13,7 +13,7 @@ with open("config_template_p4_sys_module.config", "r") as f:
     config_p4_sys_temp = f.read()
 
 # parameters
-nominal_ntuple_dir = "/data/zprime/ntuples_fit/fit_ntup_1201_high/run2"
+# nominal_ntuple_dir = "/data/zprime/ntuples_fit/fit_ntup_1201_high/run2"
 fit_ntup_dir = "/data/zprime/ntuples_fit/1220-sys"
 mass_points_low = [5, 7, 9, 11, 13, 15, 17, 19, 23, 27, 31, 35, 39]
 mass_points_high = [42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75]
@@ -21,8 +21,8 @@ dnn_cuts = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
 
 def get_mass_cut(mass):
-    sigma_5 = 5 * (-0.0202966 + 0.0190822 * mass)
-    return (mass - sigma_5, mass + sigma_5)
+    sigma_range = 3 * (-0.0202966 + 0.0190822 * mass)
+    return (mass - sigma_range, mass + sigma_range)
 
 
 for mass in mass_points_low + mass_points_high:
@@ -81,7 +81,6 @@ for mass in mass_points_low + mass_points_high:
         sys_config += config_wt_config
         # add p4 systematic config
         for sys_name in p4_sys_names:
-            # for sys_name in ["EG_RESOLUTION_ALL__1"]:
             ntuple_path_up_sig = f"{fit_ntup_dir}/{region}/tree_{sys_name}up/run2"
             ntuple_path_down_sig = f"{fit_ntup_dir}/{region}/tree_{sys_name}down/run2"
             # sig
@@ -95,15 +94,15 @@ for mass in mass_points_low + mass_points_high:
             )
             sys_config += sys_entry
             # bkg
-            ntuple_path_up_bkg = f"{fit_ntup_dir}/{region}/tree_{sys_name}up/mc16d"
-            ntuple_path_down_bkg = f"{fit_ntup_dir}/{region}/tree_{sys_name}down/mc16d"
+            ntuple_path_up_bkg = f"{fit_ntup_dir}/{region}/tree_{sys_name}up/run2"
+            ntuple_path_down_bkg = f"{fit_ntup_dir}/{region}/tree_{sys_name}down/run2"
             sys_entry = config_p4_sys_temp.format(
                 p_sys_name=sys_name,
                 p_sample="ZZ4l",
                 p_ntuple_path_up=ntuple_path_up_bkg,
                 p_ntuple_path_down=ntuple_path_down_bkg,
                 p_ntuple_files="bkg_qcd",
-                p_weight_str="weight*139/43.9",
+                p_weight_str="weight",
             )
             sys_config += sys_entry
         new_config += sys_config
@@ -176,15 +175,15 @@ for dnn_cut in dnn_cuts:
         )
         sys_config += sys_entry
         # bkg
-        ntuple_path_up_bkg = f"{fit_ntup_dir}/{region}/tree_{sys_name}up/mc16d"
-        ntuple_path_down_bkg = f"{fit_ntup_dir}/{region}/tree_{sys_name}down/mc16d"
+        ntuple_path_up_bkg = f"{fit_ntup_dir}/{region}/tree_{sys_name}up/run2"
+        ntuple_path_down_bkg = f"{fit_ntup_dir}/{region}/tree_{sys_name}down/run2"
         sys_entry = config_p4_sys_temp.format(
             p_sys_name=sys_name[5:],
             p_sample="ZZ4l",
             p_ntuple_path_up=ntuple_path_up_bkg,
             p_ntuple_path_down=ntuple_path_down_bkg,
             p_ntuple_files="bkg_qcd",
-            p_weight_str="weight*139/43.9",
+            p_weight_str="weight",
         )
         sys_config += sys_entry
     new_config += sys_config
@@ -196,3 +195,9 @@ fit_script_name = "fit_all.sh"
 copyfile(f"./{fit_script_name}", folder_path_stats.joinpath(fit_script_name))
 copyfile(f"./{fit_script_name}", folder_path.joinpath(fit_script_name))
 
+
+fit_script_name = "get_limits.py"
+copyfile(f"./{fit_script_name}", pathlib.Path(f"low_mass_stats").joinpath(fit_script_name))
+copyfile(f"./{fit_script_name}", pathlib.Path(f"low_mass_sys").joinpath(fit_script_name))
+copyfile(f"./{fit_script_name}", pathlib.Path(f"high_mass_stats").joinpath(fit_script_name))
+copyfile(f"./{fit_script_name}", pathlib.Path(f"high_mass_sys").joinpath(fit_script_name))
