@@ -2,6 +2,8 @@
 
 **/backup*
 **/runS*
+**/high_mass_*/**/*
+**/low_mass_*/**/*
 **/core.*
 
 *.pdf
