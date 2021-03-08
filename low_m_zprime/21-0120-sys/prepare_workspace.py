@@ -95,12 +95,23 @@ for mass in mass_points_low + mass_points_high:
             # bkg
             ntuple_path_up_bkg = f"{fit_ntup_dir}/{region}/tree_{sys_name}up/run2"
             ntuple_path_down_bkg = f"{fit_ntup_dir}/{region}/tree_{sys_name}down/run2"
+            ## add qcd
             sys_entry = config_p4_sys_temp.format(
                 p_sys_name=sys_name,
                 p_sample="ZZ4l",
                 p_ntuple_path_up=ntuple_path_up_bkg,
                 p_ntuple_path_down=ntuple_path_down_bkg,
                 p_ntuple_files="bkg_qcd",
+                p_weight_str="weight",
+            )
+            sys_config += sys_entry
+            ## add ggZZ
+            sys_entry = config_p4_sys_temp.format(
+                p_sys_name=sys_name,
+                p_sample="ggZZ",
+                p_ntuple_path_up=ntuple_path_up_bkg,
+                p_ntuple_path_down=ntuple_path_down_bkg,
+                p_ntuple_files="bkg_ggZZ",
                 p_weight_str="weight",
             )
             sys_config += sys_entry
